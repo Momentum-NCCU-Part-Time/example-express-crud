@@ -1,0 +1,12 @@
+### all bookmarks
+GET http://localhost:3000/bookmarks
+
+
+### create a new bookmark
+POST http://localhost:3000/bookmarks
+Content-Type: application/json
+
+{
+  "title": "MDN",
+  "url": "https://developer.mozilla.org/en-US/"
+}
