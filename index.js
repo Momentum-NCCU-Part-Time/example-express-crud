@@ -3,8 +3,9 @@ require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const mongoose = require('mongoose')
-const db_url = 'mongodb://localhost:27017/bookmarks'
-mongoose.connect(db_url)
+
+// connect to the database
+mongoose.connect(process.env.DATABASE_URL)
 const db = mongoose.connection
 db.once('open', () => console.log('🦈 Connected to MongoDB'))
 
