@@ -2,34 +2,30 @@
 require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
+const mongoose = require('mongoose')
+const db_url = 'mongodb://localhost:27017/bookmarks'
+mongoose.connect(db_url)
+const db = mongoose.connection
+db.once('open', () => console.log('🦈 Connected to MongoDB'))
+
 const port = process.env.PORT
 
 const app = express()
 app.use(morgan('dev'))
 app.use(express.json())
 
-const bookmarkDB = [
-  {
-    "title": "Google",
-    "url": "https://www.google.com"
-  },
-  {
-    "title": "momentum-nccu-course",
-    "url": "https://momentum-nccu-part-time.github.io/course"
-  }
-]
+const Bookmark = require('./models/Bookmark')
 
-app.get("/bookmarks", (req, res) => {
-  res.status(200).json({bookmarks: bookmarkDB})
+app.get('/bookmarks', (req, res) => {
+  // query the database and return the results of the query in the response
+  // the database query is asynchronous, so we need to use the .then() method
+  Bookmark.find().then((results) => res.status(200).json(results))
 })
 
-app.post("/bookmarks", (req, res) => {
-  // get the data from the body of the POST request
-  // use that data to create a new bookmark obj
-  const newBookmark = req.body
-  // add that new obj to the array of existing bookmarks
-  bookmarkDB.push(newBookmark)
-  res.status(201).json(newBookmark)
+app.post('/bookmarks', (req, res) => {
+  const newBookmark = new Bookmark(req.body) // create the object
+  newBookmark.save() // save it to the database
+  res.status(201).json(newBookmark) // return the newly created object
 })
 
 app.listen(port, () => console.log(`🐷 Application is running on port ${port}`))
