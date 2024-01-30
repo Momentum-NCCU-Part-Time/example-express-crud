@@ -7,6 +7,21 @@ POST http://localhost:3000/bookmarks
 Content-Type: application/json
 
 {
-  "title": "MDN",
-  "url": "https://developer.mozilla.org/en-US/"
+  "title": "bad bookmark",
+  "url": "https://drawing.garden/"
 }
+
+### get a single bookmark
+GET http://localhost:3000/bookmarks/65b94ca8f819533d9760393a
+
+### update a bookmark
+PATCH http://localhost:3000/bookmarks/65b94ca8f819533d9760393a
+Content-Type: application/json
+
+{
+  "title": "Emoji Garden"
+}
+
+### delete a bookmark
+DELETE http://localhost:3000/bookmarks/65b950131150803cf84a5447
+

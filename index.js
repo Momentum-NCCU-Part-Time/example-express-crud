@@ -29,4 +29,36 @@ app.post('/bookmarks', (req, res) => {
   res.status(201).json(newBookmark) // return the newly created object
 })
 
+app.get('/bookmarks/:id', (req, res) => {
+  Bookmark.findById(req.params.id)
+    .then((result) => {
+      if (result) {
+        res.status(200).json(result)
+      } else {
+        res.status(404).json({ message: 'Not found' })
+      }
+    })
+    .catch((error) => res.status(400).json({ message: error.message }))
+})
+
+app.patch('/bookmarks/:id', (req, res) => {
+  console.log(req.body)
+  Bookmark.findById(req.params.id)
+    .then((result) => {
+      result.title = req.body.title || result.title
+      result.url = req.body.url || result.url
+      result.save()
+      res.status(200).json(result)
+    })
+    .catch((error) => res.status(400).json({ message: error.message }))
+})
+
+app.delete('/bookmarks/:id', (req, res) => {
+  Bookmark.findByIdAndDelete(req.params.id)
+    .then((result) => {
+      res.status(204).json()
+    })
+    .catch((error) => res.status(400).json({ message: error.message }))
+})
+
 app.listen(port, () => console.log(`🐷 Application is running on port ${port}`))
