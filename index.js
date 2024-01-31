@@ -29,4 +29,17 @@ app.post('/bookmarks', (req, res) => {
   res.status(201).json(newBookmark) // return the newly created object
 })
 
+app.get('/bookmarks/:bookmarkId', (req, res) => {
+  // look up the specific bookmark that is being requested in the url, using the model
+  Bookmark.findById(req.params.bookmarkId)
+    .then((results) => {
+      if (results) {
+        res.status(200).json(results)
+      } else {
+        res.status(404).json({ message: 'not found' })
+      }
+    })
+    .catch((error) => res.status(400).json({ message: 'Bad request' }))
+})
+
 app.listen(port, () => console.log(`🐷 Application is running on port ${port}`))

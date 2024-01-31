@@ -7,6 +7,24 @@ POST http://localhost:3000/bookmarks
 Content-Type: application/json
 
 {
-  "title": "MDN",
-  "url": "https://developer.mozilla.org/en-US/"
+  "title": "Emoji Garden",
+  "url": "https://drawing.garden"
 }
+
+### get one bookmark by id
+GET http://localhost:3000/bookmarks/65b30f8ace943ee2ba7e38b3
+
+### test get one bookmark with an object id not in the db (right length), just doesn't exist)
+GET http://localhost:3000/bookmarks/65b30f8ace943ee2ba7e38b3
+
+### test get one bookmark with an invalid object id (not the right length)
+GET http://localhost:3000/bookmarks/blurb
+
+### TODO: get one bookmark by title
+GET http://localhost:3000/bookmarks/google
+
+### TODO: update one bookmark
+PATCH http://localhost:3000/bookmarks/65b30f8ace943ee2ba7e38b3
+
+### TODO: delete one bookmark
+DELETE http://localhost:3000/bookmarks/65b30f8ace943ee2ba7e38b3
