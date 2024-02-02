@@ -42,4 +42,30 @@ app.get('/bookmarks/:bookmarkId', (req, res) => {
     .catch((error) => res.status(400).json({ message: 'Bad request' }))
 })
 
+app.patch('/bookmarks/:bookmarkId', (req, res) => {
+  // find the bookmark -- look it up in the db
+  Bookmark.findById(req.params.bookmarkId)
+    .then((bookmark) => {
+      // if bookmark is not found, return 404
+      if (bookmark) {
+        // update the record somehow???
+        bookmark.title = req.body.title || bookmark.title
+        bookmark.url = req.body.url || bookmark.url
+        // save it! (persist the changes to the database)
+        bookmark.save()
+        // send a success response + the json results
+        res.status(200).json(bookmark)
+      } else {
+        res.status(404).json({ message: 'not found' })
+      }
+      // handle any errors that come up with appropriate responses to the client
+    })
+    .catch((error) => res.status(400).json({ message: 'Bad request' }))
+})
+
+app.delete('/bookmarks/:bookmarkId', (req, res) => {
+  // look up the bookmark by id
+  // delete it, using Mongoose methods
+})
+
 app.listen(port, () => console.log(`🐷 Application is running on port ${port}`))
