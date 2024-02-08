@@ -64,8 +64,11 @@ app.patch('/bookmarks/:bookmarkId', (req, res) => {
 })
 
 app.delete('/bookmarks/:bookmarkId', (req, res) => {
-  // look up the bookmark by id
-  // delete it, using Mongoose methods
+  Bookmark.findByIdAndDelete(req.params.id)
+    .then((result) => {
+      res.status(204).json()
+    })
+    .catch((error) => res.status(400).json({ message: error.message }))
 })
 
 app.listen(port, () => console.log(`🐷 Application is running on port ${port}`))
