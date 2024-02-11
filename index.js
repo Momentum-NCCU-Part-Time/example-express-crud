@@ -20,7 +20,7 @@ const Bookmark = require('./models/Bookmark')
 app.get('/bookmarks', (req, res) => {
   // query the database and return the results of the query in the response
   // the database query is asynchronous, so we need to use the .then() method
-  Bookmark.find().then((results) => res.status(200).json(results))
+  Bookmark.find({}, '-notes').then((results) => res.status(200).json(results))
 })
 
 app.post('/bookmarks', (req, res) => {
@@ -71,4 +71,26 @@ app.delete('/bookmarks/:bookmarkId', (req, res) => {
     .catch((error) => res.status(400).json({ message: error.message }))
 })
 
+// add notes to a bookmark
+
+app.post('/bookmarks/:id/notes', (req, res) => {
+  Bookmark.findById(req.params.id)
+    .then((bookmark) => {
+      if (!bookmark) {
+        res.status(404).json({ message: 'Bookmark not found' })
+      } else {
+        const { title, text, priority } = req.body
+        if (text) {
+          bookmark.notes.push({ title, text, priority })
+          bookmark
+            .save()
+            .then(() => res.status(201).json(bookmark.notes))
+            .catch((error) => res.status(400).json({ message: error.message }))
+        } else {
+          res.status(400).json({ error: 'text field is required' })
+        }
+      }
+    })
+    .catch((error) => res.status(400).json({ message: error.message }))
+})
 app.listen(port, () => console.log(`🐷 Application is running on port ${port}`))
