@@ -3,6 +3,7 @@ require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const mongoose = require('mongoose')
+const bcrypt = require('bcryptjs')
 
 // connect to the database
 mongoose.connect(process.env.DATABASE_URL)
@@ -16,6 +17,7 @@ app.use(morgan('dev'))
 app.use(express.json())
 
 const Bookmark = require('./models/Bookmark')
+const User = require('./models/User')
 
 app.get('/bookmarks', (req, res) => {
   // query the database and return the results of the query in the response
@@ -93,4 +95,62 @@ app.post('/bookmarks/:id/notes', (req, res) => {
     })
     .catch((error) => res.status(400).json({ message: error.message }))
 })
+
+const validateAuthRequestBody = (req, res, next) => {
+  if (Object.keys(req.body).includes('password', 'username')) {
+    next()
+  } else {
+    res
+      .status(400)
+      .json({ message: 'Username and password fields are required.' })
+  }
+}
+// User register
+app.post('/register', validateAuthRequestBody, (req, res) => {
+  const { username, password } = req.body
+  User.findOne({ username: req.body.username }).then((user) => {
+    if (user) {
+      res.status(400).json({ message: 'User already exists' })
+    } else {
+      const hashedPassword = bcrypt.hashSync(password, 8)
+      const newUser = new User({ username, password: hashedPassword })
+      newUser.save()
+      res.status(201).json(newUser)
+    }
+  })
+})
+
+// User login
+app.post('/login', validateAuthRequestBody, (req, res) => {
+  const { username, password } = req.body
+  console.log({ username, password })
+  User.findOne({ username }).then((user) => {
+    if (!user) {
+      res.status(401).json({ message: 'Unauthorized' })
+    }
+    bcrypt.compare(password, user.password, (err, result) => {
+      if (result) {
+        const token = user.getToken()
+        res.status(200).json({ auth: token })
+      } else {
+        res.status(401).json({ message: 'Unauthorized' })
+      }
+    })
+  })
+})
+
+// User logout
+app.delete('/logout', (req, res) => {
+  console.log(req.headers)
+  const token = req.headers.authorization
+  User.findOne({ auth: token }).then((user) => {
+    if (!user) {
+      return res.status(401).json({ message: 'Unauthorized' })
+    }
+    user.auth = null
+    user.save()
+    res.status(204).json()
+  })
+})
+
 app.listen(port, () => console.log(`🐷 Application is running on port ${port}`))

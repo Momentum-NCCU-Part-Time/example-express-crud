@@ -20,7 +20,7 @@ GET http://localhost:3000/bookmarks/65b30f8ace943ee2ba7e38b5
 ### test get one bookmark with an invalid object id (not the right length)
 GET http://localhost:3000/bookmarks/blurb
 
-### TODO: update one bookmark
+### update one bookmark
 PATCH http://localhost:3000/bookmarks/65bc433d6097a46e9ac86795
 Content-Type: application/json
 
@@ -29,9 +29,28 @@ Content-Type: application/json
   "title": "Emoji Garden 🌱"
 }
 
-### TODO: delete one bookmark
+### delete one bookmark
 DELETE http://localhost:3000/bookmarks/65b30f8ace943ee2ba7e38b3
 
+### register
+POST http://localhost:3000/register
+Content-Type: application/json
 
-### TODO: get one bookmark by title
-GET http://localhost:3000/bookmarks/google
+{
+  "username": "anton",
+  "password": "badpassword"
+}
+
+
+### login
+POST http://localhost:3000/login
+Content-Type: application/json
+
+{
+  "username": "anton",
+  "password": "badpassword"
+}
+
+### logout
+DELETE http://localhost:3000/logout
+Authorization: $2a$10$xQ4waezrCt2KHtXjXg.NR.dC7F9Cnhur3KjrpHVChBC7quKjA/XW2
