@@ -3,6 +3,7 @@ require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const mongoose = require('mongoose')
+const cors = require('cors')
 const bcrypt = require('bcryptjs')
 
 // connect to the database
@@ -15,6 +16,7 @@ const port = process.env.PORT
 const app = express()
 app.use(morgan('dev'))
 app.use(express.json())
+app.use(cors())
 
 const Bookmark = require('./models/Bookmark')
 const User = require('./models/User')
@@ -152,5 +154,7 @@ app.delete('/logout', (req, res) => {
     res.status(204).json()
   })
 })
+
+
 
 app.listen(port, () => console.log(`🐷 Application is running on port ${port}`))
