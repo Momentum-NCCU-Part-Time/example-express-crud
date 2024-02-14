@@ -3,6 +3,7 @@ require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
 const mongoose = require('mongoose')
+const cors = require('cors')
 
 // connect to the database
 mongoose.connect(process.env.DATABASE_URL)
@@ -14,6 +15,7 @@ const port = process.env.PORT
 const app = express()
 app.use(morgan('dev'))
 app.use(express.json())
+app.use(cors())
 
 const Bookmark = require('./models/Bookmark')
 
@@ -93,4 +95,35 @@ app.post('/bookmarks/:id/notes', (req, res) => {
     })
     .catch((error) => res.status(400).json({ message: error.message }))
 })
+
+app.patch('/bookmarks/:id/notes/:noteId', (req, res) => {
+  // look up the bookmark
+  Bookmark.findById(req.params.id)
+    .then((bookmark) => {
+      if (!bookmark) {
+        res.status(404).json({ message: 'Bookmark not found' })
+      } else {
+        // if we find a bookmark, look up the note
+        // https://mongoosejs.com/docs/subdocs.html#finding-a-subdocument
+        const note = bookmark.notes.id(req.params.noteId)
+        if (!note) {
+          res.status(404).json({ message: 'Note not found' })
+        } else {
+          // if we find the note, update it using the data from the body of the request
+          // or use the existing value if no new value is provided
+          const { title, text, priority } = req.body
+          note.title = title || note.title
+          note.text = text || note.text
+          note.priority = priority || note.priority
+          // saving the parent document (bookmark) will save the changes to the subdocument (note)
+          bookmark
+            .save()
+            .then(() => res.status(200).json(note))
+            .catch((error) => res.status(400).json({ message: error.message }))
+        }
+      }
+    })
+    .catch((error) => res.status(400).json({ message: error.message }))
+})
+
 app.listen(port, () => console.log(`🐷 Application is running on port ${port}`))
