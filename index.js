@@ -66,9 +66,13 @@ app.patch('/bookmarks/:bookmarkId', (req, res) => {
 })
 
 app.delete('/bookmarks/:bookmarkId', (req, res) => {
-  Bookmark.findByIdAndDelete(req.params.id)
+  Bookmark.findByIdAndDelete(req.params.bookmarkId)
     .then((result) => {
-      res.status(204).json()
+      if (!result) {
+        res.status(404).json({ message: 'Bookmark not found' })
+      } else {
+        res.status(204).json()
+      }
     })
     .catch((error) => res.status(400).json({ message: error.message }))
 })
