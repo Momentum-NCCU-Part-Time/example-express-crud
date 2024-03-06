@@ -16,11 +16,16 @@ userSchema.methods.isAuthenticated = function () {
 }
 
 userSchema.methods.getToken = function () {
-  if (!this.isAuthenticated()) {
-    this.auth = auth.generateToken()
+  console.log('Generating token')
+  let token
+  if (this.auth) {
+    token = this.auth
+  } else {
+    token = auth.generateToken()
+    this.auth = token
     this.save()
   }
-  return this.auth
+  return token
 }
 // create the model and allow it to be used in other files
 module.exports = mongoose.model('User', userSchema)

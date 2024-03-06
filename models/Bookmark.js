@@ -6,6 +6,7 @@ const bookmarkSchema = new mongoose.Schema(
     title: String,
     url: String,
     notes: [{ text: String }],
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   },
   { timestamps: true }
 )
