@@ -1,18 +1,19 @@
 ### all bookmarks
 GET http://localhost:3000/bookmarks
-
+Authorization: $2a$10$FKMg7iwXwBWo8S/cozsJDOL5etZe2cZD1Kt7NtwBkDciIyIeoMUEC
 
 ### create a new bookmark
 POST http://localhost:3000/bookmarks
 Content-Type: application/json
+Authorization: $2a$10$FKMg7iwXwBWo8S/cozsJDOL5etZe2cZD1Kt7NtwBkDciIyIeoMUEC
 
 {
-  "title": "Emoji Garden",
-  "url": "https://drawing.garden"
+  "title": "weather.com",
+  "url": "https://weather.com"
 }
 
 ### get one bookmark by id
-GET http://localhost:3000/bookmarks/65bc433d6097a46e9ac86795
+GET http://localhost:3000/bookmarks/65e77cdc3f092f1c8568d279
 
 ### test get one bookmark with an object id not in the db (right length), just doesn't exist)
 GET http://localhost:3000/bookmarks/65b30f8ace943ee2ba7e38b5
@@ -29,21 +30,29 @@ Content-Type: application/json
   "title": "Emoji Garden 🌱"
 }
 
-
 ### delete one bookmark
 DELETE http://localhost:3000/bookmarks/65b30f8ace943ee2ba7e38b3
 
-
-### create a new note on a bookmark
-POST http://localhost:3000/bookmarks/65c29d7b82d71005940ee8cf/notes
+### register
+POST http://localhost:3000/register
 Content-Type: application/json
 
 {
-  "text": "This is a note about Emoji Garden"
+  "username": "anton",
+  "password": "badpassword"
 }
 
-### update a note on a bookmark
-PATCH http://localhost:3000/bookmarks/65bc433d6097a46e9ac86795/notes/5f3b3f8ace943ee2ba7e38b3
 
-### TODO: get one bookmark by title
-GET http://localhost:3000/bookmarks/google
+### login
+POST http://localhost:3000/login
+Content-Type: application/json
+
+{
+  "username": "anton",
+  "password": "badpassword"
+}
+
+### logout
+DELETE http://localhost:3000/logout
+Authorization: $2a$10$FKMg7iwXwBWo8S/cozsJDOL5etZe2cZD1Kt7NtwBkDciIyIeoMUEC
+
